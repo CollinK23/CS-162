@@ -5,170 +5,175 @@
 
 using namespace std;
 
+void pressEnter(){
+    string temp;
+    cout << "Press Enter To Roll" << endl;
+    getline(cin, temp);
+}
+
 void introduction(){
     string name;
     cout << "Welcome To Bowling!" << endl;
     cout << "What's Your Name?";
     cin >> name;
-    cout << "Hello " << name << "!"<< endl;
+    cout << endl << "Hello " << name << "!"<< endl << endl;
+    getline(cin, name);
 }
 
-string spec1(int value){
+string specialChar1(int value){
     if (value == 10){
         return "X";
     }else if (value == 0){
         return "-";
-    }else{
-        return to_string(value);
     }
+    return to_string(value);
 }
 
-string spec2(int value1, int value2, int rollNumber){
+string specialChar2(int value1, int value2, int i){
     if (value1 == 10 and value2 == 10){
         return "X";
     }else if (value1 + value2 == 10 and value2 != 0){
         return "/";
-    }else if (value1 == 10 and rollNumber != 3){
+    }else if (value1 == 10 and i != 9){
         return " ";
     }else if (value2 == 0){
         return "-";
-    }else{
-        return to_string(value2);
     }
+    return to_string(value2);
 }
 
-
-void output(int f, int (&totalScore), int fr[10][4], int rollNumber){
+void output(int f, int fr[10][4], int roll){
     cout << "Name    |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  10  |Total" <<endl;
     cout << "-----------------------------------------------------------------------------" <<endl;
     cout << "Player1 |";
     for (int i = 0; i < 10; i++){
-        if ((i<f and rollNumber == 1) or (i<=f and rollNumber == 2) or (i<9 and rollNumber == 3)){
-            cout << setw(2)<< spec1(fr[i][0])<< setw(3)<< spec2(fr[i][0], fr[i][1], rollNumber)<< "|";
-        }else if (i==f and rollNumber == 1){
-            cout << setw(2)<< spec1(fr[i][0])<< setw(4)<< "|";
-        }else if(i == 9 and rollNumber == 3){
-            cout << setw(1) << spec1(fr[i][0]) << setw(3)<< spec2(fr[i][0], fr[i][1], rollNumber)<< spec1(fr[i][2]) << "|";
-        }
-        else{
+        if ((i < f and roll == 1) or (i <= f and roll == 2) or (i < 9 and roll == 3)){
+            cout << setw(2)<< specialChar1(fr[i][0])
+            << setw(3)<< specialChar2(fr[i][0], fr[i][1], i)<< "|";
+
+        }else if (i == f and roll == 1){
+            cout << setw(2)<< specialChar1(fr[i][0])<< setw(4)<< "|";
+
+        }else if(i == 9 and roll == 3){
+            cout << setw(1) << specialChar1(fr[i][0]) 
+            << setw(2)<< specialChar2(fr[i][0], fr[i][1], i) 
+            << " " << specialChar1(fr[i][2]) << "|";
+
+        }else{
             cout << setw(6)<<"|";
         }
     }
-    cout << totalScore << endl;
+    if (f == 0 and roll == 1){
+        cout << "0" << endl;
+    }else if (roll == 1){
+        cout << fr[f - 1][3] << endl;
+    }else{
+        cout << fr[f][3] << endl;
+    }
     cout << "        |";
     for (int i = 0; i < 10; i++){
-        if ((i<f and (rollNumber == 1 or rollNumber == 3)) or (i<=f and rollNumber == 2)){
+        if ((i < f and (roll == 1 or roll == 3)) or (i <= f and roll == 2)){
             cout << setw(5) << fr[i][3]<< "|";
-        }else if(i == 9 and rollNumber == 3){
-            cout << setw(5) << totalScore<< "|";
-        }
-        else{
+        }else if(i == 9 and roll == 3){
+            cout << setw(5) << fr[i][3]<< "|";
+        }else{
             cout << setw(6)<<"|";
         }
     }
-    cout << endl;
+    cout << endl << "-----------------------------------------------------------------------------\n\n\n";
 }
 
-int rollOne(int &totalScore, int f, int fr[10][4]){
-    int firstRoll = rand()%11;
-    int rollNumber = 1;
-    cout << "You Knocked Down " << firstRoll << " pins" << endl;
-    fr[f][0] = firstRoll;
-
-    if(fr[f - 1][0] == 10 and fr[f - 2][0] == 10 and firstRoll < 10){
-        fr[f - 2][3] += firstRoll;
-        fr[f - 1][3] += (2 * firstRoll);
-        totalScore += (2 * firstRoll);
+void rollOne(int f, int fr[10][4]){
+    if (f > 0){
+        fr[f][3] = fr[f - 1][3];
     }
+    fr[f][0] = rand()%11;
+    cout << "You Knocked Down " << fr[f][0] << " pins" << endl;
 
-    if (firstRoll == 10){
+    if(fr[f - 1][0] == 10 and fr[f - 2][0] == 10 and fr[f][0] < 10){
+        fr[f - 2][3] += fr[f][0];
+        if (f < 9){
+            fr[f - 1][3] += 2 * fr[f][0];
+        }else{
+            fr[f - 1][3] += fr[f][0];
+        }
+        fr[f][3] += 2 * fr[f][0];
+    }
+    if (fr[f][0] == 10){
         if(fr[f - 1][0] == 10 and fr[f - 2][0] == 10){
             fr[f - 2][3] += 10;
             fr[f - 1][3] += 20;
-            totalScore += 20;
+            fr[f][3] += 20;
         }else if((fr[f - 1][0] == 10) or (fr[f - 1][0] + fr[f - 1][1] == 10)){
             fr[f - 1][3] += 10;
-            totalScore = fr[f - 1][3];
+            fr[f][3] = fr[f - 1][3];
         }
-        totalScore += 10;
-        fr[f][3] = totalScore;
+        if(f < 9){
+           fr[f][3] += 10; 
+        }
     }
-    output(f, totalScore, fr, rollNumber);
-    return firstRoll;
+    output(f, fr, 1);
 }
 
-int rollTwo(int (&totalScore), int pinsLeft, int firstRoll, int f, int fr[10][4]){
-    int secondRoll;
-    int rollNumber = 2;
-    if (firstRoll == 10 and f == 9){
-        pinsLeft = 10;
-        secondRoll = rand()%11;
+void rollTwo(int f, int fr[10][4]){
+    if (fr[f][0] == 10 and f == 9){
+        fr[f][1] = rand()%11;
     }else{
-    secondRoll = rand()%(pinsLeft + 1);
+        fr[f][1] = rand()%(11 - fr[f][0]);
     }
-    pinsLeft -= secondRoll;
-    cout << "You Knocked Down " << secondRoll << " pins" << endl;
-    fr[f][1] = secondRoll;
-    totalScore += (firstRoll + secondRoll);
-    fr[f][3] = totalScore;
 
-    if(fr[f - 1][0] == 10 and fr[9][0] != 10){
-        fr[f - 1][3] += (firstRoll + secondRoll);
-        totalScore += (firstRoll + secondRoll);
-        fr[f][3] = totalScore;
+    cout << "You Knocked Down " << fr[f][1] << " pins" << endl;
+    int frameTotal = fr[f][0] + fr[f][1];
+    fr[f][3] += frameTotal;
+
+    if(fr[f - 1][0] == 10 and fr[9][0] == 10){
+        if (fr[f][0] == 10){
+            fr[f - 1][3] += fr[f][1];
+            fr[f][3] += fr[f][1];
+        }else{
+            fr[f - 1][3] += fr[f][1];
+            fr[f][3] += frameTotal;
+        }
+
+    }else if(fr[f - 1][0] == 10 and fr[9][0] != 10){
+        fr[f - 1][3] += fr[f][1];
+        fr[f][3] += fr[f][1]; 
+         
     }else if (fr[f-1][0] + fr[f-1][1] == 10 and fr[9][0] != 10){
-        fr[f - 1][3] += firstRoll;
-        totalScore += firstRoll;
-        fr[f][3] = totalScore;
+        fr[f - 1][3] += fr[f][0];
+        fr[f][3] += fr[f][0];
     }
 
-    output(f, totalScore, fr, rollNumber);
-    return secondRoll;
+    output(f, fr, 2);
 }
 
-void rollThree(int f, int fr[10][4], int (&totalScore)){
-    int rollNumber = 3;
-    int thirdRoll;
-    if (fr[f][1] == 10 or fr[f][0] == 10 or fr[f][1] + fr[f][0] == 10){
-        thirdRoll = rand()%11;
+void rollThree(int f, int fr[10][4]){
+    if (fr[f][1] == 10 or fr[f][1] + fr[f][0] == 10){
+        fr[f][2] = rand()%11;
     }else{
-        thirdRoll = rand()%(11 - fr[f][1]);
+        fr[f][2] = rand()%(11 - fr[f][1]);
     }
-    fr[f][2] = thirdRoll;
-    totalScore += thirdRoll;
 
-    output(f, totalScore, fr, rollNumber);
+    fr[f][3] += fr[f][2];
+
+    output(f, fr, 3);
 }
 
 void frame(){
-    int totalScore = 0;
     srand(time(NULL));
     int fr[10][4] = {0};
-    int pinsLeft = 10;
-    int firstRoll;
-    int secondRoll;
-
     for (int i = 0; i < 10; i++){
-        pinsLeft = 10;
-        cout << "Frame " << i + 1 << endl;
-        cout << "Press Enter To Roll" << endl;
-        cin.get();
+        cout << "Frame " << i + 1 << "..." << endl;
+        pressEnter();
+        rollOne(i, fr);
 
-        firstRoll = rollOne(totalScore, i, fr);
-        pinsLeft -= firstRoll;
-
-        if (pinsLeft > 0 or fr[9][0] == 10){
-            cout << "Press Enter To Roll" << endl;
-            cin.get();
-            secondRoll = rollTwo(totalScore, pinsLeft, firstRoll, i, fr);
-            pinsLeft -= secondRoll;
-            cout << "\n\n";
-        }     
-        if ((firstRoll == 10 or secondRoll == 10 or firstRoll + secondRoll == 10) and i == 9){
-            cout << "Press Enter To Roll" << endl;
-            cin.get();
-            rollThree(i, fr, totalScore);
-            cout << "\n\n";
+        if (fr[i][0] < 10 or fr[9][0] == 10){
+            pressEnter();
+            rollTwo(i, fr);
+        }
+        if ((fr[i][0] == 10 or fr[i][1] == 10 or fr[i][0] + fr[i][1] == 10) and i == 9){
+            pressEnter();
+            rollThree(i, fr);
         }
     }
 }
@@ -177,14 +182,13 @@ int main() {
     bool contGame = true;
     string cont;
 
-    introduction();
-
     while (contGame){
+        introduction();
         frame();
         while (cont != "y" or cont != "n"){
-            cont = "";
-            cout << "Press y to continue, n to exit:" << cont;
+            cout << "Press y to continue, n to exit:";
             cin >> cont;
+            
             if (cont == "y"){
                 break;
             }else if (cont == "n"){

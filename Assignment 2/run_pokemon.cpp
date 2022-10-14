@@ -10,6 +10,10 @@ int main(){
 
     if (contDex == true){
         searchPrompt();
+
+
+        //Need to move dynamic functions into main function
+        delete_info(character);
     }
 
     return 0;

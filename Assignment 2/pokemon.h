@@ -21,7 +21,7 @@ bool getUserFile();
 
 int selectSearchMethod();
 
-void searchPrompt();
+void searchPrompt(int, Pokemon* selectPokemon);
 
 Pokemon* create_pokemons(int);
 
@@ -29,8 +29,8 @@ void populate_pokedex_data(Pokedex & , ifstream &);
 
 string* create_moves(int);
 
-void populate_pokemon(Pokemon &, ifstream &);
+void populate_pokemon(Pokemon* selectPokemon, ifstream &, int);
 
-void delete_info(Pokemon &);
+void delete_info(Pokemon* selectPokemon, int);
 
 #endif

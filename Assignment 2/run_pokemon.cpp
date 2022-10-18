@@ -6,14 +6,38 @@ using namespace std;
 
 int main(){
 
-    bool contDex = getUserFile();
+    string pokemonFile;
+    ifstream fin;
+    ifstream forLoopCounter;
+    string line_;
 
-    if (contDex == true){
-        searchPrompt();
+    cout << "Enter the name of the file that contains information about Pokemon: ";
+    cin >> pokemonFile;
 
+    fin.open(pokemonFile.c_str());
 
-        //Need to move dynamic functions into main function
-        delete_info(character);
+    if (fin.is_open()){
+
+        int numOfPokemon;
+
+        fin >> numOfPokemon;
+
+        Pokedex info;
+
+        populate_pokedex_data(info, fin);
+
+        Pokemon* selectPokemon = create_pokemons(numOfPokemon);
+
+        populate_pokemon(selectPokemon, fin, numOfPokemon);
+
+        searchPrompt(numOfPokemon, selectPokemon);
+
+        fin.close();
+
+        delete_info(selectPokemon, numOfPokemon);
+
+    }else{
+        cout << pokemonFile << " Does Not Exist" << endl;
     }
 
     return 0;

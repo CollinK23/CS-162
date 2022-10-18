@@ -1,46 +1,51 @@
 #include <iostream>
 #include "pokemon.h"
 #include <fstream>
+#include <limits>
 
 using namespace std;
 
 Pokemon* create_pokemons(int numOfPokemon){
-    Pokemon* character;
-
-    character = new Pokemon[numOfPokemon];
+    Pokemon* dex = new Pokemon[numOfPokemon];
+    return dex;
 
 }
 
-void populate_pokedex_data(Pokedex &info , ifstream &){
-    ifstream fin;
-    
+string* create_moves(int numOfMoves){
+    string* moves = new string [numOfMoves];
+    return moves;
+}
+
+void populate_pokemon(Pokemon* selectPokemon, ifstream &fin, int numOfPokemon){
+    for (int i = 0; i < numOfPokemon; i++){
+        fin >> selectPokemon[i].dex_num;
+        fin >> selectPokemon[i].name;
+        fin >> selectPokemon[i].type;
+        fin >> selectPokemon[i].num_moves;
+
+        string* moves = create_moves(selectPokemon[i].num_moves);
+
+        for (int j = 0; j < selectPokemon[i].num_moves; j++){
+            selectPokemon[i].moves = moves;
+            fin >> selectPokemon[i].moves[j];
+        }
+    }
+}
+
+void populate_pokedex_data(Pokedex &info , ifstream &fin){
+
     int numOfPokemon;
-
-    fin >> numOfPokemon;
-
     info.trainer = "Collin";
-    info.num_pokemon = numOfPokemon;
 
 }
 
-string* create_moves(int){
-
-}
-
-void populate_pokemon(Pokemon* character, ifstream &, int numOfPokemon){
+void delete_info(Pokemon* selectPokemon, int numOfPokemon){
     for (int i = 0; i < numOfPokemon; i++){
-        
-        character[i].dex_num = 4;
+        delete []selectPokemon[i].moves;
     }
 
-    for (int i = 0; i < numOfPokemon; i++){
-        
-        cout << endl << character[i].dex_num << endl;
-    }
-}
-
-void delete_info(Pokemon* character){
-    delete [] character;
+    delete []selectPokemon;
+    selectPokemon = NULL;
 }
 
 
@@ -49,44 +54,62 @@ void delete_info(Pokemon* character){
 //------------------------------------------------ OUTPUT FUNCTIONS ----------------------------------------------------------------------------
 
 
+void txtOutput(int j, Pokemon* selectPokemon, int numOfPokemon){
+    ofstream fout;
+    string fileName;
+    
+    cout << "Select The File You Want To Output To: " << endl;
+    cin >> fileName;
+
+    fout.open(fileName.c_str());
 
 
-bool getUserFile(){
-    string pokemonFile;
-    ifstream fin;
-    string line_;
-    bool contDex = true;
-
-    cout << "Enter the name of the file that contains information about Pokemon: ";
-    cin >> pokemonFile;
-
-    fin.open(pokemonFile.c_str());
-
-    if (fin.is_open()){
-
-        int numOfPokemon;
-
-        fin >> numOfPokemon;
-
-        Pokedex info;
-
-        populate_pokedex_data(info, fin);
-
-        Pokemon* character = create_pokemons(numOfPokemon);
-
-        populate_pokemon(character, fin, numOfPokemon);
-
-        fin.close();
-
-    }else{
-        cout << pokemonFile << " Does Not Exist" << endl;
-        contDex = false;
+    fout << "Dex Number: " << selectPokemon[j].dex_num << endl;
+    fout << "Name: " << selectPokemon[j].name << endl;
+    fout << "Type: " << selectPokemon[j].type << endl;
+    fout << "Number of Moves: " << selectPokemon[j].num_moves << endl;
+    
+    for (int i = 0; i < selectPokemon[j].num_moves; i++){
+        fout << "Move" << i + 1 << ": " << selectPokemon[j].moves[i] << endl;
     }
-
-    return contDex;
 }
 
+void terminalOutput(int j, Pokemon* selectPokemon, int numOfPokemon){
+    cout << "Dex Number: " << selectPokemon[j].dex_num << endl;
+    cout << "Name: " << selectPokemon[j].name << endl;
+    cout << "Type: " << selectPokemon[j].type << endl;
+    cout << "Number of Moves: " << selectPokemon[j].num_moves << endl;
+    
+    for (int i = 0; i < selectPokemon[j].num_moves; i++){
+        cout << "Move" << i + 1 << ": " << selectPokemon[j].moves[i] << endl;
+    }
+}
 
+int searchByDex(Pokemon* selectPokemon, int dexNum, int numOfPokemon){
+    int selectOutput;
+    for (int j = 0; j < numOfPokemon; j++){
+        if (selectPokemon[j].dex_num == dexNum){
+            while (true){
+                cout << "(1.) Output to .txt File" << endl;
+                cout << "(2.) Output to Terminal" << endl;
+                cin >> selectOutput;
+
+                if (selectOutput == 1){
+                    txtOutput(j, selectPokemon, numOfPokemon);
+                    return 0;
+                }else if (selectOutput == 2){
+                    terminalOutput(j, selectPokemon, numOfPokemon);
+                    return 0;
+                }else if (selectOutput != 1 or selectOutput != 2){
+                    searchPrompt(numOfPokemon, selectPokemon);
+                    return 0;
+                }
+            }
+        }
+    }
+    cout << "Pokemon Does Not Exist In the Dex" << endl;
+    searchPrompt(numOfPokemon, selectPokemon);
+}
 
 int selectSearchMethod(){
     int searchMethod;
@@ -100,16 +123,24 @@ int selectSearchMethod(){
     return searchMethod;
 }
 
-
-
-void searchPrompt(){
+void searchPrompt(int numOfPokemon, Pokemon* selectPokemon){
     int searchMethod = selectSearchMethod();
 
+    cout << "Enter the Dex Number of the Pokemon: " << endl;
     if (searchMethod == 1){
         int dexNum;
-        cout << "Enter the Dex Number of the Pokemon: " << endl;
-        cin >> dexNum;
-        cout << "Function 1 Goes Here " << dexNum << endl;
+        while (true){
+            cin >> dexNum;
+
+            if (!cin){
+                cout << "Invalid Dex Number. Enter again: " << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<int>::max(), '\n');
+                continue;
+            }
+            else break;
+        }
+        searchByDex(selectPokemon, dexNum, numOfPokemon);
         
     }else if (searchMethod == 2){
         string pokeName;
@@ -127,6 +158,6 @@ void searchPrompt(){
         cout << "Function 4 Goes Here" << endl;
 
     }else{
-        searchPrompt();
+        searchPrompt(numOfPokemon, selectPokemon);
     }
 }

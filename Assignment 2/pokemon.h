@@ -1,3 +1,4 @@
+#include <string>
 #ifndef POKEMON
 #define POKEMON
 
@@ -14,14 +15,14 @@ struct Pokemon {
 struct Pokedex {
     string trainer;
     int num_pokemon;
-    Pokemon* dex;
+    Pokemon* selectPokemon;
 };
 
 bool getUserFile();
 
 int selectSearchMethod();
 
-void searchPrompt(int, Pokemon* selectPokemon);
+void searchPrompt(int, Pokedex&);
 
 Pokemon* create_pokemons(int);
 
@@ -29,8 +30,8 @@ void populate_pokedex_data(Pokedex & , ifstream &);
 
 string* create_moves(int);
 
-void populate_pokemon(Pokemon* selectPokemon, ifstream &, int);
+void populate_pokemon(Pokemon&, ifstream &);
 
-void delete_info(Pokemon* selectPokemon, int);
+void delete_info(Pokedex&);
 
 #endif

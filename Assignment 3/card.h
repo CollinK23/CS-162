@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#ifndef GOFISH
-#define GOFISH
+#ifndef CARDS
+#define CARDS
 
 using namespace std;
 
@@ -27,25 +27,7 @@ class Card {
 };
 
 
-class Deck{
-    private:
-        Card cards[52]; //A full deck of cards
-        int n_cards; //number of cards remaining in the deck
-    public:
-        Deck(); //Deck Constructor
-        Deck(int);
-
-        //~Deck();
-
-        void set_n_cards(int);
-        int get_n_cards();
-        void fillDeck();
-        void shuffleDeck();
-        void removeCard();
-    
-};
-
-class Hand{
+/*class Hand{
     private:
         Card* cards; // An array of cards in hand
         int n_cards; // Number of cards in the hand
@@ -65,6 +47,6 @@ class Game {
         Deck d;
         Player players[2];
     public:
-};
+};*/
 
 #endif

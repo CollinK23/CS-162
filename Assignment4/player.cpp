@@ -8,12 +8,20 @@ Player::Player(){
     this->arrows = 3;
     this->playerLocationX = 0;
     this->playerLocationY = 0;
+    this->boardSize = 0;
+    this->goldCollected = false;
 }
 
-Player::Player(int newX, int newY){
-    this->arrows = 3;
-    this->playerLocationX = newX;
-    this->playerLocationY = newY;
+void Player::setBoardSize(int newBoardSize){
+    this->boardSize = newBoardSize;
+}
+
+void Player::setGoldColl(bool goldPickedUp){
+    this->goldCollected = goldPickedUp;
+}
+
+int Player::getBoardSize(){
+    return this->boardSize;
 }
 
 void Player::setLocX(int newX){
@@ -34,6 +42,10 @@ int Player::getLocY(){
 
 int Player::getArrows(){
     return this->arrows;
+}
+
+bool Player::getGoldColl(){
+    return this->goldCollected;
 }
 
 void Player::useArrow(){

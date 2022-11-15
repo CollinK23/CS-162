@@ -11,12 +11,15 @@ class Player{
         int playerLocationX;
         int playerLocationY;
         int arrows;
+        int boardSize;
+        bool goldCollected;
     public:
         Player();
-        Player(int, int);
 
         void setLocX(int);
         void setLocY(int);
+        void setGoldColl(bool);
+        void setBoardSize(int);
 
         void moveLeft();
         void moveRight();
@@ -26,6 +29,8 @@ class Player{
         int getLocX();
         int getLocY();
         int getArrows();
+        int getBoardSize();
+        bool getGoldColl();
 
         void useArrow();
 };

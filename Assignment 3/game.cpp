@@ -242,7 +242,16 @@ void Game::startGame(bool cheating, bool hardMode){
 ** Post-Conditions: Winner is output
 *********************************************************************/
 void Game::gameOver(){
-    cout << "GAME OVER" << endl << endl;
+    cout << endl << "GAME OVER" << endl << endl;
+
+    cout << "Computer's Books: ";
+    players[1].printBooks();
+    cout << endl << endl;
+
+    cout << "Your Books: ";
+    players[0].printBooks();
+    cout << endl << endl;
+
     if (players[0].getNumOfBooks() > players[1].getNumOfBooks()){
         cout << "You Win!" << endl << endl;
     }else if (players[0].getNumOfBooks() < players[1].getNumOfBooks()){

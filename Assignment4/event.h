@@ -1,4 +1,5 @@
 #include <iostream>
+#include "player.h"
 
 #ifndef EVENT
 #define EVENT
@@ -7,16 +8,21 @@ using namespace std;
 
 class Event{
     protected:
-        const string roomName;
-        int roomType;  // 0 - empty , 1 - starting room, 2 - gold, 3 - bottomless pit, 4 - super bats, 5 - wumpus
-        bool playerVisited;
         bool gameOver;
+        int roomLocX;
+        int roomLocY;
     public:
         Event();
-        Event(string, int);
 
-        virtual void encounter();
-        virtual void percept();
+        void setRoomLoc(int, int);
+        int getRoomLocX();
+        int getRoomLocY();
+
+        virtual void display(Player&) = 0;
+        virtual void display2(Player&) = 0;
+        virtual void encounter(Player&, Event*);
+        virtual void percept(Player&, Event*);
+        virtual bool checkHealth();
 };
 
 #endif

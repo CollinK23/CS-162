@@ -2,23 +2,39 @@
 #include <string>
 #include "event.h"
 
-Event::Event() : roomName("Empty Room"){
-    this->playerVisited = false;
+Event::Event(){
     this->gameOver = false;
-    this->roomType = 0;
+    this->roomLocX = 0;
+    this->roomLocY = 0;
 }
 
-Event::Event(string newName, int roomType) : roomName(newName){
-    this->playerVisited = false;
-    this->gameOver = false;
-    this->roomType = roomType;
-}
-
-void Event::encounter(){
-    cout << "The room is Empty" << endl;
+void Event::encounter(Player& player, Event* ptr){
+    if (player.getLocX() == this->roomLocX and player.getLocY() == this->roomLocY){
+        ptr->display(player);
+    }
 }
 
 
-void Event::percept(){
+void Event::percept(Player& player, Event* ptr){
+    if (((player.getLocX() == ((this->roomLocX) + 1) or player.getLocX() == ((this->roomLocX) - 1)) and player.getLocY() == (this->roomLocY)) or
+        (player.getLocX() == (this->roomLocX) and (player.getLocY() == ((this->roomLocY) + 1) or player.getLocY() == ((this->roomLocY) - 1)))){
+            ptr->display2(player);
+    }
+}
 
+void Event::setRoomLoc(int newRoomLocX, int newRoomLocY){
+    this->roomLocX = newRoomLocX;
+    this->roomLocY = newRoomLocY;
+}
+
+int Event::getRoomLocX(){
+    return this->roomLocX;
+}
+
+int Event::getRoomLocY(){
+    return this->roomLocY;
+}
+
+bool Event::checkHealth(){
+    return this->gameOver;
 }

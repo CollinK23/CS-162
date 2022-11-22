@@ -1,3 +1,12 @@
+/*********************************************************************
+** Program Filename: run_wumpus.cpp
+** Author: Collin Kimball
+** Date: 11/20/22
+** Description: Hunt the Wumpus Game
+** Input:
+** Output:
+*********************************************************************/
+
 #include <iostream>
 #include <vector>
 #include<cstdlib>
@@ -7,56 +16,128 @@
 
 using namespace std;
 
-int runGame(bool randomize, int boardSize){
-
-    if (randomize == true){
-        cout << "Enter a Width And Height For The Cave: ";
-        cin >> boardSize;
-    }
-
-    Board board(boardSize);
-
-    board.setSpecRooms(randomize);
-    board.printBoard();
-    board.printCheatBoard();
-    board.movePlayer();
-
-    return boardSize;
-}
-
-bool newBoard(){
+/*********************************************************************
+** Function: cheatMode
+** Description: User chooses if they want to enter debug mode
+** Parameters: None
+** Pre-Conditions: None
+** Post-Conditions: User will either see computers cards or not
+*********************************************************************/
+bool cheatMode(){
     string cont;
 
-    //While loop that checks user input for correctiveness
-    while (true){
-        //While loop continues to run until the user enters a valid input
-        while (cont != "y" or cont != "n"){
-            cout << "Press y to randomize board, n for same board:";
-            cin >> cont;
-            
-            if (cont == "y"){
-                //User selects hard mode
-                return true;
-            }else if (cont == "n"){
-                //User selects regular mode
-                return false;
-            }else{
-                cout << "Invalid Input. ";
-            }
+        
+    //While loop continues to run until the user enters a valid input
+    while (cont != "y" or cont != "n"){
+        cout << "Press y to use cheats, n for regular game:";
+        cin >> cont;
+        
+        if (cont == "y"){
+            //User selects cheat mode
+            return true;
+        }else if (cont == "n"){
+            //User doesn't use cheats
+            return false;
+        }else{
+            cout << "Invalid Input. ";
         }
     }
 }
 
+/*********************************************************************
+** Function: dimensions
+** Description: User selects the size of the board
+** Parameters: None
+** Pre-Conditions: None
+** Post-Conditions: Board size is an integer greater than 3
+*********************************************************************/ 
+int dimensions(){
+    int size;
+
+    //While loop continues to run until the user enters a valid input
+    while (true){
+        cout << "Choose Width and Length of The Board:";
+        cin >> size;
+        
+        if (size > 3){
+            //User selects size
+            return size;
+        }else{
+            cout << "Invalid Input. ";
+        }
+    }
+}
+
+/*********************************************************************
+** Function: runGame
+** Description: Runs the entire game
+** Parameters: randomize boolean, boardSize boolean, 2D Vector
+** Pre-Conditions: board size is selected
+** Post-Conditions: Returns vector copy of the board
+*********************************************************************/ 
+vector<vector<int>> runGame(bool randomize, int boardSize, vector<vector<int>> v2Copy){
+    Room board(boardSize);
+
+    //User wants to play with new rooms
+    if (randomize == true){
+        v2Copy = board.setSpecRooms();  
+    }else{
+        //User wants to play with the same rooms
+        v2Copy = board.setSpecRooms2(v2Copy);
+    }
+
+    board.movePlayer(cheatMode());
+
+    return v2Copy;
+}
+
+
+/*********************************************************************
+** Function: newBoard
+** Description: User selects whether they want to play the game on the same board or not
+** Parameters: none
+** Pre-Conditions: User selects to play the game again
+** Post-Conditions: True or false depending on if they want the same board
+*********************************************************************/ 
+bool newBoard(){
+    string cont;
+
+    //While loop continues to run until the user enters a valid input
+    while (cont != "y" or cont != "n"){
+        cout << "Press y to randomize board, n for same board:";
+        cin >> cont;
+        
+        if (cont == "y"){
+            //User selects hard mode
+            return true;
+        }else if (cont == "n"){
+            //User selects regular mode
+            return false;
+        }else{
+            cout << "Invalid Input. ";
+        }
+    }
+}
+
+/*********************************************************************
+** Function: main
+** Description: Replays the program until user quits
+** Parameters: none
+** Pre-Conditions:
+** Post-Conditions:
+*********************************************************************/ 
 int main(){
-    int boardSize = 0;
+    int boardSize = dimensions();
     bool randomize = true;
     bool contGame = true;
     string cont;
+    vector<vector<int>> v2Copy;
 
     //While loop that checks user input for correctiveness
     while (contGame){
+
         //Runs game
-        boardSize = runGame(randomize, boardSize);
+        v2Copy = runGame(randomize, boardSize, v2Copy);
         //While loop continues to run until the user enters a valid input
         while (cont != "y" or cont != "n"){
             cout << "Press y to continue, n to exit:";
@@ -64,6 +145,10 @@ int main(){
             
             if (cont == "y"){
                 //Continues game
+                randomize = newBoard();
+                if (randomize){
+                    boardSize = dimensions();
+                }
                 break;
             }else if (cont == "n"){
                 //Quits Game
@@ -73,65 +158,7 @@ int main(){
                 cout << "Invalid Input. ";
             }
         }
-        randomize = newBoard();
     }
-    /*srand(time(NULL));
-    int xcord;
-    int ycord;
-    int boardSize = 0;
-    int specialRooms[5] = {1, 1, 2, 2, 1};
-    int playerLocation[2] = {0, 0};
-    cout << "Enter a Width And Height For The Cave: ";
-    cin >> boardSize;
-
-
-    vector<vector<int>> v2(boardSize, vector<int>(boardSize, 0));
-
-    for (int i = 0; i < 5; i++){
-        int roomsFilled = 0;
-        while (roomsFilled < specialRooms[i]){
-            xcord = rand()%boardSize;
-            ycord = rand()%boardSize;
-
-            if (i == 0){
-                playerLocation[0] = xcord;
-                playerLocation[1] = ycord;
-            }
-
-            v2[xcord][ycord] = i + 1;
-            roomsFilled++;
-        }
-    }
-
-    for (int i = 0; i < boardSize; i++){
-        for (int j = 0; j <boardSize; j++){
-            cout << "-----------";
-        }
-        cout << endl;
-        for (int z = 0; z < 5; z++){
-            for (int k = 0; k < boardSize; k++){
-                if ((i + 1) == playerLocation[1] and (k + 1) == playerLocation[0] and z == 2){
-                    cout << "|    *    |";
-                }else{
-                    cout << "|         |";
-                }
-            }
-            cout << endl;
-        }
-    }
-    for (int j = 0; j <boardSize; j++){
-            cout << "-----------";
-    }
-    cout << endl << endl;
-
-    /*for (auto i : v2){
-        for (auto j : i){
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-
-    cout << endl << "Array Key: 1 = Starting Point, 2 = gold, 3 = pit, 4 = bats, 5 = wumpus" << endl;*/
 
     return 0;
 }

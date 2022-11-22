@@ -11,12 +11,12 @@
 
 #include <vector>
 
-#ifndef BOARD
-#define BOARD
+#ifndef ROOM
+#define ROOM
 
 using namespace std;
 
-class Board{
+class Room{
     private:
         int boardSize;
         Event *wumpus = new Wumpus;
@@ -27,14 +27,18 @@ class Board{
         Player player;
         vector<vector<int>> v2;
     public:
-        Board();
-        Board(int);
-        void setSpecRooms(bool);
+        Room();
+        Room(int);
+        ~Room();
+
+        vector<vector<int>> setSpecRooms();
+        vector<vector<int>> setSpecRooms2(vector<vector<int>>);
         void setRoomType(int, int, int, int);
         void printBoard();
         bool printEvents();
         void printCheatBoard();
-        void movePlayer();
+        void movePlayer(bool);
+        void moveWumpus();
 
 };
 

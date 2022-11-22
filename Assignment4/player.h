@@ -13,6 +13,7 @@ class Player{
         int arrows;
         int boardSize;
         bool goldCollected;
+        bool killedWump;
     public:
         Player();
 
@@ -20,6 +21,7 @@ class Player{
         void setLocY(int);
         void setGoldColl(bool);
         void setBoardSize(int);
+        void killWumpus();
 
         void moveLeft();
         void moveRight();
@@ -29,10 +31,10 @@ class Player{
         int getLocX();
         int getLocY();
         int getArrows();
+        void removeArrow();
         int getBoardSize();
         bool getGoldColl();
-
-        void useArrow();
+        bool getWumpus();
 };
 
 #endif

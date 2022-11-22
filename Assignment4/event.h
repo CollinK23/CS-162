@@ -9,6 +9,7 @@ using namespace std;
 class Event{
     protected:
         bool gameOver;
+        bool wumpusDead;
         int roomLocX;
         int roomLocY;
     public:
@@ -22,7 +23,9 @@ class Event{
         virtual void display2(Player&) = 0;
         virtual void encounter(Player&, Event*);
         virtual void percept(Player&, Event*);
+        virtual bool useArrow(Player&){}
         virtual bool checkHealth();
+        virtual bool checkWumpus();
 };
 
 #endif
